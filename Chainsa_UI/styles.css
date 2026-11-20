@@ -1,0 +1,137 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Padauk:wght@400;700&family=Space+Grotesk:wght@500;600;700&display=swap');
+
+/* Base Reset & Font Handling */
+:root {
+  --font-display: 'Space Grotesk', sans-serif;
+  --font-body: 'Inter', sans-serif;
+  --font-burmese: 'Padauk', sans-serif;
+  --color-canvas: #080C17;
+  --color-panel: #0F1626;
+  --color-input: #161F33;
+  --color-amber: #F5C242;
+  --color-emerald: #52C46B;
+  --color-blue: #1982C4;
+  --color-crimson: #EF4444;
+}
+
+body {
+  background-color: var(--color-canvas);
+  color: #F8FAFC;
+  font-family: var(--font-body);
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Burmese Typography Rules */
+body[lang="my"] {
+  font-family: var(--font-burmese), var(--font-body);
+  line-height: 1.75 !important;
+}
+
+body[lang="my"] h1,
+body[lang="my"] h2,
+body[lang="my"] h3,
+body[lang="my"] h4,
+body[lang="my"] .font-heading {
+  font-family: var(--font-burmese), var(--font-display);
+  line-height: 1.65 !important;
+  letter-spacing: normal !important;
+}
+
+body[lang="my"] button,
+body[lang="my"] .btn,
+body[lang="my"] .badge {
+  padding-top: 0.5rem;
+  padding-bottom: 0.5rem;
+  line-height: 1.6 !important;
+}
+
+/* Custom Scrollbars */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: #080C17;
+}
+::-webkit-scrollbar-thumb {
+  background: #1E293B;
+  border-radius: 9999px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #334155;
+}
+
+/* Glass & Glow utilities */
+.glass-panel {
+  background: #0F1626;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.glass-panel-hover {
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.glass-panel-hover:hover {
+  border-color: rgba(255, 255, 255, 0.16);
+  transform: translateY(-2px);
+  box-shadow: 0 12px 30px -10px rgba(0, 0, 0, 0.5);
+}
+
+.ai-gradient-panel {
+  background: linear-gradient(135deg, #171238 0%, #0F1626 50%, #0B101D 100%);
+  border: 1px solid rgba(99, 102, 241, 0.22);
+}
+
+/* Map SVG styling */
+.region-path {
+  fill: #161F33;
+  stroke: #2A3854;
+  stroke-width: 1;
+  transition: all 0.2s ease;
+  cursor: pointer;
+}
+.region-path:hover {
+  fill: #202D49;
+  stroke: #60A5FA;
+  stroke-width: 1.5;
+}
+.region-path.active {
+  fill: rgba(245, 194, 66, 0.22) !important;
+  stroke: #F5C242 !important;
+  stroke-width: 2 !important;
+  filter: drop-shadow(0 0 8px rgba(245, 194, 66, 0.4));
+}
+
+.township-dot {
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  cursor: pointer;
+}
+.township-dot:hover {
+  r: 8px !important;
+  fill: #F5C242 !important;
+}
+
+/* Pulse animation for active node */
+@keyframes amberGlow {
+  0%, 100% {
+    filter: drop-shadow(0 0 6px rgba(245, 194, 66, 0.5));
+  }
+  50% {
+    filter: drop-shadow(0 0 16px rgba(245, 194, 66, 0.8));
+  }
+}
+.pulse-amber {
+  animation: amberGlow 2.5s infinite;
+}
+
+/* Smooth Tab transitions */
+.tab-active {
+  background-color: #FFFFFF !important;
+  color: #080C17 !important;
+  font-weight: 600 !important;
+}
+
+/* Number alignment */
+.tabular-numbers {
+  font-variant-numeric: tabular-nums;
+}

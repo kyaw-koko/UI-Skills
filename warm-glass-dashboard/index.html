@@ -1,0 +1,634 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ATLAS - Command Center</title>
+  <!-- Google Fonts: Plus Jakarta Sans -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <!-- Ambient Backdrop with Photo Overlay & Warm Blur -->
+  <div class="ambient-backdrop">
+    <div class="photo-overlay"></div>
+    <div class="warm-glow glow-1"></div>
+    <div class="warm-glow glow-2"></div>
+    <div class="vignette-overlay"></div>
+  </div>
+
+  <div class="app-layout">
+    <!-- Top Floating Header Capsule -->
+    <header class="top-nav-bar">
+      <!-- Left: Brand / Workspace Info -->
+      <div class="brand-cluster">
+        <div class="brand-avatar">
+          <span class="avatar-letter">A</span>
+        </div>
+        <div class="brand-meta">
+          <span class="brand-name">ATLAS</span>
+          <span class="brand-workspace">Workspace</span>
+        </div>
+      </div>
+
+      <!-- Center: AI Search / Command Input Capsule -->
+      <div class="ai-search-capsule" id="aiSearchTrigger" role="button" tabindex="0" title="Click to ask Atlas AI">
+        <div class="iridescent-orb" aria-hidden="true"></div>
+        <span class="search-placeholder">Show me what needs attention.</span>
+        <button class="search-icon-btn" aria-label="Search">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="11" cy="11" r="8"></circle>
+            <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+          </svg>
+        </button>
+      </div>
+
+      <!-- Right: Action Buttons -->
+      <div class="top-actions">
+        <button class="glass-icon-btn" id="themeToggleBtn" aria-label="Appearance & Themes" title="Ambient Lighting Settings">
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
+          </svg>
+        </button>
+
+        <button class="glass-icon-btn notification-btn" id="notificationBtn" aria-label="Notifications" title="2 Pending Notifications">
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>
+            <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
+          </svg>
+          <span class="notification-badge-dot"></span>
+        </button>
+      </div>
+    </header>
+
+    <!-- Main Workspace Container Wrapper with Floating Left Rail -->
+    <div class="workspace-wrapper">
+      <!-- Floating Left Icon Rail -->
+      <aside class="left-floating-rail" aria-label="Quick Navigation">
+        <button class="rail-btn active" data-nav="command-center" aria-label="Command Center" title="Command Center">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="3" y="3" width="7" height="7" rx="1.5"></rect>
+            <rect x="14" y="3" width="7" height="7" rx="1.5"></rect>
+            <rect x="14" y="14" width="7" height="7" rx="1.5"></rect>
+            <rect x="3" y="14" width="7" height="7" rx="1.5"></rect>
+          </svg>
+        </button>
+        <button class="rail-btn" data-nav="trends" aria-label="Trends" title="Trends & Growth">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="23 6 13.5 15.5 8.5 10.5 1 18"></polyline>
+            <polyline points="17 6 23 6 23 12"></polyline>
+          </svg>
+        </button>
+        <button class="rail-btn" data-nav="metrics" aria-label="Metrics" title="Analytics & Metrics">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="18" y1="20" x2="18" y2="10"></line>
+            <line x1="12" y1="20" x2="12" y2="4"></line>
+            <line x1="6" y1="20" x2="6" y2="14"></line>
+          </svg>
+        </button>
+        <button class="rail-btn" data-nav="operations" aria-label="Premium Operations" title="Operations & Team">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="2" y="7" width="20" height="14" rx="2" ry="2"></rect>
+            <path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"></path>
+          </svg>
+        </button>
+      </aside>
+
+      <!-- Main Bento Glass Container -->
+      <main class="main-glass-shell">
+        <!-- Section Header -->
+        <div class="shell-header">
+          <div class="header-titles">
+            <h1 class="page-title">Command Center</h1>
+            <p class="page-subtitle">Revenue, automations, and what needs your attention.</p>
+          </div>
+
+          <!-- Time Range Pill Switcher -->
+          <div class="time-range-switcher" role="tablist" aria-label="Select Date Range">
+            <button class="range-pill" role="tab" aria-selected="false" data-range="7">7 days</button>
+            <button class="range-pill active" role="tab" aria-selected="true" data-range="30">30 days</button>
+            <button class="range-pill" role="tab" aria-selected="false" data-range="90">90 days</button>
+          </div>
+        </div>
+
+        <!-- 12-Column Responsive Bento Grid -->
+        <div class="bento-grid">
+          
+          <!-- ROW 1, COL 1: Hero Revenue Card (4 cols) -->
+          <article class="bento-card hero-revenue-card col-span-4">
+            <div class="card-top-row">
+              <span class="card-label">Total revenue</span>
+              <span class="currency-tag">USD</span>
+            </div>
+
+            <div class="revenue-hero-metric">
+              <span class="kpi-symbol">$</span><span class="kpi-value" id="kpiRevenue">47,200</span>
+            </div>
+
+            <div class="trend-pill-wrapper">
+              <span class="trend-pill trend-up">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                  <line x1="7" y1="17" x2="17" y2="7"></line>
+                  <polyline points="7 7 17 7 17 17"></polyline>
+                </svg>
+                <span id="kpiRevenueTrend">+8.3%</span> vs prior period
+              </span>
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="revenue-actions">
+              <button class="btn-pill-primary" id="btnViewTrends">
+                <span>View trends</span>
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <line x1="7" y1="17" x2="17" y2="7"></line>
+                  <polyline points="7 7 17 7 17 17"></polyline>
+                </svg>
+              </button>
+              <button class="btn-pill-glass" id="btnViewMetrics">
+                <span>View metrics</span>
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <line x1="7" y1="17" x2="17" y2="7"></line>
+                  <polyline points="7 7 17 7 17 17"></polyline>
+                </svg>
+              </button>
+            </div>
+
+            <!-- Mini Breakdown Footer -->
+            <div class="revenue-breakdown">
+              <div class="breakdown-item">
+                <span class="breakdown-label">Subscriptions</span>
+                <span class="breakdown-value" id="kpiSubscriptions">$32,379</span>
+              </div>
+              <div class="breakdown-item">
+                <span class="breakdown-label">Services</span>
+                <span class="breakdown-value" id="kpiServices">$9,818</span>
+              </div>
+              <div class="breakdown-item">
+                <span class="breakdown-label">Add-ons</span>
+                <span class="breakdown-value" id="kpiAddons">$5,003</span>
+              </div>
+            </div>
+          </article>
+
+          <!-- ROW 1, COL 2: 2x2 Nested KPI Grid (4 cols) -->
+          <div class="bento-kpi-subgrid col-span-4">
+            <!-- 1. Automations run (Mint Slate Featured Accent Card) -->
+            <article class="bento-card kpi-card-featured">
+              <div class="kpi-card-head">
+                <span class="kpi-card-title">Automations run</span>
+                <div class="mini-icon-badge" title="Active workflows">
+                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon>
+                  </svg>
+                </div>
+              </div>
+              <div class="kpi-card-number tabular-nums" id="kpiAutomations">1,284</div>
+              <div class="kpi-card-badge">
+                <span class="badge-mint-contained">
+                  <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                    <line x1="7" y1="17" x2="17" y2="7"></line>
+                    <polyline points="7 7 17 7 17 17"></polyline>
+                  </svg>
+                  <span>+9.5%</span> vs prior period
+                </span>
+              </div>
+            </article>
+
+            <!-- 2. Subscribers -->
+            <article class="bento-card kpi-card">
+              <div class="kpi-card-head">
+                <span class="kpi-card-title">Subscribers</span>
+                <div class="mini-icon-ghost" title="Audience">
+                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                    <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+                    <circle cx="9" cy="7" r="4"></circle>
+                    <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+                    <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+                  </svg>
+                </div>
+              </div>
+              <div class="kpi-card-number tabular-nums" id="kpiSubscribers">1,847</div>
+              <div class="kpi-card-badge">
+                <span class="badge-mint-ghost">
+                  <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                    <line x1="7" y1="17" x2="17" y2="7"></line>
+                    <polyline points="7 7 17 7 17 17"></polyline>
+                  </svg>
+                  <span>+124</span> this month
+                </span>
+              </div>
+            </article>
+
+            <!-- 3. Churn rate -->
+            <article class="bento-card kpi-card">
+              <div class="kpi-card-head">
+                <span class="kpi-card-title">Churn rate</span>
+                <div class="mini-icon-ghost" title="Retention">
+                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                    <polyline points="23 18 13.5 8.5 8.5 13.5 1 6"></polyline>
+                    <polyline points="17 18 23 18 23 12"></polyline>
+                  </svg>
+                </div>
+              </div>
+              <div class="kpi-card-number tabular-nums" id="kpiChurn">4.2%</div>
+              <div class="kpi-card-badge">
+                <span class="badge-coral-ghost">
+                  <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                    <line x1="7" y1="7" x2="17" y2="17"></line>
+                    <polyline points="17 7 17 17 7 17"></polyline>
+                  </svg>
+                  <span>-0.5%</span> vs prior period
+                </span>
+              </div>
+            </article>
+
+            <!-- 4. Open tickets -->
+            <article class="bento-card kpi-card">
+              <div class="kpi-card-head">
+                <span class="kpi-card-title">Open tickets</span>
+                <div class="mini-icon-ghost" title="Support queue">
+                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                    <line x1="4" y1="21" x2="4" y2="14"></line>
+                    <line x1="4" y1="10" x2="4" y2="3"></line>
+                    <line x1="12" y1="21" x2="12" y2="12"></line>
+                    <line x1="12" y1="8" x2="12" y2="3"></line>
+                    <line x1="20" y1="21" x2="20" y2="16"></line>
+                    <line x1="20" y1="12" x2="20" y2="3"></line>
+                    <line x1="1" y1="14" x2="7" y2="14"></line>
+                    <line x1="9" y1="8" x2="15" y2="8"></line>
+                    <line x1="17" y1="16" x2="23" y2="16"></line>
+                  </svg>
+                </div>
+              </div>
+              <div class="kpi-card-number tabular-nums" id="kpiTickets">12</div>
+              <div class="kpi-card-note">
+                <span id="kpiTicketsSub">9 resolved today</span>
+              </div>
+            </article>
+          </div>
+
+          <!-- ROW 1, COL 3: Automation Activity Dual-tone Bar Chart (4 cols) -->
+          <article class="bento-card col-span-4 chart-card">
+            <div class="chart-header">
+              <div class="chart-title-group">
+                <h3 class="card-title">Automation activity</h3>
+                <p class="chart-subtitle">Completed and sent to review &middot; last 7 days</p>
+              </div>
+              <div class="chart-legend">
+                <span class="legend-item"><span class="legend-dot dot-complete"></span> Complete</span>
+                <span class="legend-item"><span class="legend-dot dot-review"></span> Review</span>
+              </div>
+            </div>
+
+            <!-- Custom Dual-tone Rounded Bar Chart -->
+            <div class="bento-bar-chart" id="barChartContainer">
+              <!-- Day: Tue -->
+              <div class="chart-bar-col" data-day="Tue" data-complete="142" data-review="22">
+                <div class="bar-pillar">
+                  <div class="bar-segment-review" style="height: 14%;"></div>
+                  <div class="bar-segment-complete" style="height: 48%;"></div>
+                </div>
+                <span class="bar-label">Tue</span>
+              </div>
+
+              <!-- Day: Wed -->
+              <div class="chart-bar-col" data-day="Wed" data-complete="158" data-review="26">
+                <div class="bar-pillar">
+                  <div class="bar-segment-review" style="height: 15%;"></div>
+                  <div class="bar-segment-complete" style="height: 52%;"></div>
+                </div>
+                <span class="bar-label">Wed</span>
+              </div>
+
+              <!-- Day: Thu -->
+              <div class="chart-bar-col" data-day="Thu" data-complete="176" data-review="30">
+                <div class="bar-pillar">
+                  <div class="bar-segment-review" style="height: 16%;"></div>
+                  <div class="bar-segment-complete" style="height: 58%;"></div>
+                </div>
+                <span class="bar-label">Thu</span>
+              </div>
+
+              <!-- Day: Fri -->
+              <div class="chart-bar-col" data-day="Fri" data-complete="210" data-review="35">
+                <div class="bar-pillar">
+                  <div class="bar-segment-review" style="height: 18%;"></div>
+                  <div class="bar-segment-complete" style="height: 70%;"></div>
+                </div>
+                <span class="bar-label">Fri</span>
+              </div>
+
+              <!-- Day: Sat -->
+              <div class="chart-bar-col" data-day="Sat" data-complete="120" data-review="18">
+                <div class="bar-pillar">
+                  <div class="bar-segment-review" style="height: 12%;"></div>
+                  <div class="bar-segment-complete" style="height: 38%;"></div>
+                </div>
+                <span class="bar-label">Sat</span>
+              </div>
+
+              <!-- Day: Sun -->
+              <div class="chart-bar-col" data-day="Sun" data-complete="185" data-review="28">
+                <div class="bar-pillar">
+                  <div class="bar-segment-review" style="height: 15%;"></div>
+                  <div class="bar-segment-complete" style="height: 62%;"></div>
+                </div>
+                <span class="bar-label">Sun</span>
+              </div>
+
+              <!-- Day: Mon -->
+              <div class="chart-bar-col active-bar" data-day="Mon" data-complete="245" data-review="42">
+                <div class="bar-pillar">
+                  <div class="bar-segment-review" style="height: 20%;"></div>
+                  <div class="bar-segment-complete" style="height: 78%;"></div>
+                </div>
+                <span class="bar-label">Mon</span>
+              </div>
+            </div>
+
+            <!-- Chart Floating Tooltip (Dynamic) -->
+            <div class="chart-tooltip" id="chartTooltip" aria-hidden="true">
+              <div class="tooltip-header"><span id="tooltipDay">Mon</span> Overview</div>
+              <div class="tooltip-row"><span class="dot-complete"></span> Complete: <strong id="tooltipComplete">245</strong></div>
+              <div class="tooltip-row"><span class="dot-review"></span> In Review: <strong id="tooltipReview">42</strong></div>
+            </div>
+          </article>
+
+          <!-- ROW 2, LEFT STACK: Capacity & Approvals (4 cols) -->
+          <div class="bento-left-stack col-span-4">
+            <!-- Capacity Progress Card -->
+            <article class="bento-card capacity-card">
+              <div class="card-top-row">
+                <span class="card-title">Automation capacity</span>
+              </div>
+              <div class="capacity-progress-track">
+                <div class="capacity-progress-fill" id="capacityFill" style="width: 40.1%;"></div>
+              </div>
+              <div class="capacity-meta">
+                <span class="capacity-used tabular-nums" id="capacityUsed">1,284 used</span>
+                <span class="capacity-total tabular-nums" id="capacityTotal">3,200 monthly runs</span>
+              </div>
+            </article>
+
+            <!-- Approvals Action Card -->
+            <article class="bento-card approvals-card">
+              <div class="approvals-header">
+                <span class="card-title">Approvals</span>
+                <p class="card-subtitle-small">Decisions that need an owner</p>
+              </div>
+
+              <!-- Inner Interactive Action Item -->
+              <div class="approval-item" id="approvalActionItem" role="button" tabindex="0" title="Click to view approval details">
+                <div class="approval-icon-box">
+                  <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <rect x="3" y="3" width="18" height="18" rx="4"></rect>
+                    <polyline points="9 11 12 14 22 4"></polyline>
+                  </svg>
+                </div>
+                <div class="approval-text">
+                  <h4 class="approval-title">Owner review</h4>
+                  <p class="approval-desc">Refunds and renewal campaigns</p>
+                </div>
+                <button class="approval-arrow-btn" aria-label="Review Campaign Decisions">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <line x1="7" y1="17" x2="17" y2="7"></line>
+                    <polyline points="7 7 17 7 17 17"></polyline>
+                  </svg>
+                </button>
+              </div>
+            </article>
+          </div>
+
+          <!-- ROW 2, RIGHT: Recent Activity Data Table (8 cols) -->
+          <article class="bento-card col-span-8 table-card">
+            <div class="table-card-header">
+              <h3 class="card-title">Recent activity</h3>
+
+              <!-- Table Filters (Search + Status Dropdown) -->
+              <div class="table-controls">
+                <div class="table-search-pill">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <circle cx="11" cy="11" r="8"></circle>
+                    <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                  </svg>
+                  <input type="text" id="activitySearchInput" placeholder="Search activity" autocomplete="off" spellcheck="false">
+                </div>
+
+                <!-- Status Filter Dropdown -->
+                <div class="status-dropdown-wrapper">
+                  <button class="status-dropdown-btn" id="statusFilterBtn" aria-haspopup="true" aria-expanded="false">
+                    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                      <polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"></polygon>
+                    </svg>
+                    <span id="selectedStatusText">All statuses</span>
+                    <svg class="chevron-icon" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                      <polyline points="6 9 12 15 18 9"></polyline>
+                    </svg>
+                  </button>
+
+                  <div class="status-dropdown-menu" id="statusDropdownMenu" role="menu">
+                    <button class="dropdown-option active" data-status="all" role="menuitem">All statuses</button>
+                    <button class="dropdown-option" data-status="complete" role="menuitem">Complete</button>
+                    <button class="dropdown-option" data-status="needs-review" role="menuitem">Needs review</button>
+                    <button class="dropdown-option" data-status="scheduled" role="menuitem">Scheduled</button>
+                    <button class="dropdown-option" data-status="exceptions" role="menuitem">Exceptions</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Table Layout -->
+            <div class="table-container">
+              <table class="activity-table">
+                <thead>
+                  <tr>
+                    <th scope="col" class="th-activity">Activity</th>
+                    <th scope="col" class="th-source">Source</th>
+                    <th scope="col" class="th-status">Status</th>
+                    <th scope="col" class="th-time">Time</th>
+                  </tr>
+                </thead>
+                <tbody id="activityTableBody">
+                  <tr class="activity-row" data-status="complete">
+                    <td class="col-activity">Order records validated</td>
+                    <td class="col-source">Shopify</td>
+                    <td class="col-status">
+                      <span class="status-badge badge-complete">
+                        <span class="status-dot"></span> Complete
+                      </span>
+                    </td>
+                    <td class="col-time tabular-nums">10:38</td>
+                  </tr>
+                  <tr class="activity-row" data-status="needs-review">
+                    <td class="col-activity">Refund sent to review</td>
+                    <td class="col-source">Stripe</td>
+                    <td class="col-status">
+                      <span class="status-badge badge-review">
+                        <span class="status-dot"></span> Needs review
+                      </span>
+                    </td>
+                    <td class="col-time tabular-nums">10:24</td>
+                  </tr>
+                  <tr class="activity-row" data-status="scheduled">
+                    <td class="col-activity">Renewal sequence scheduled</td>
+                    <td class="col-source">HubSpot</td>
+                    <td class="col-status">
+                      <span class="status-badge badge-scheduled">
+                        <span class="status-dot"></span> Scheduled
+                      </span>
+                    </td>
+                    <td class="col-time tabular-nums">10:07</td>
+                  </tr>
+                  <tr class="activity-row" data-status="complete">
+                    <td class="col-activity">Support digest delivered</td>
+                    <td class="col-source">Reports</td>
+                    <td class="col-status">
+                      <span class="status-badge badge-complete">
+                        <span class="status-dot"></span> Complete
+                      </span>
+                    </td>
+                    <td class="col-time tabular-nums">09:51</td>
+                  </tr>
+                  <tr class="activity-row" data-status="exceptions">
+                    <td class="col-activity">Account match paused</td>
+                    <td class="col-source">Salesforce</td>
+                    <td class="col-status">
+                      <span class="status-badge badge-exceptions">
+                        <span class="status-dot"></span> Exceptions
+                      </span>
+                    </td>
+                    <td class="col-time tabular-nums">09:06</td>
+                  </tr>
+                </tbody>
+              </table>
+              <div class="empty-state-message" id="emptyStateMsg" style="display: none;">
+                No activity matches your filter.
+              </div>
+            </div>
+          </article>
+        </div>
+      </main>
+    </div>
+
+    <!-- Floating Bottom Navigation Dock -->
+    <nav class="bottom-floating-dock" aria-label="Main Dock Navigation">
+      <button class="dock-btn active" data-nav="command-center">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="3" y="3" width="7" height="7" rx="1.5"></rect>
+          <rect x="14" y="3" width="7" height="7" rx="1.5"></rect>
+          <rect x="14" y="14" width="7" height="7" rx="1.5"></rect>
+          <rect x="3" y="14" width="7" height="7" rx="1.5"></rect>
+        </svg>
+        <span>Command Center</span>
+      </button>
+
+      <button class="dock-btn" data-nav="trends">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+          <polyline points="23 6 13.5 15.5 8.5 10.5 1 18"></polyline>
+          <polyline points="17 6 23 6 23 12"></polyline>
+        </svg>
+        <span>Trends</span>
+      </button>
+
+      <button class="dock-btn" data-nav="metrics">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="18" y1="20" x2="18" y2="10"></line>
+          <line x1="12" y1="20" x2="12" y2="4"></line>
+          <line x1="6" y1="20" x2="6" y2="14"></line>
+        </svg>
+        <span>Metrics</span>
+      </button>
+
+      <button class="dock-btn" data-nav="operations">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="2" y="7" width="20" height="14" rx="2" ry="2"></rect>
+          <path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"></path>
+        </svg>
+        <span>Premium Operations</span>
+      </button>
+    </nav>
+
+    <!-- Page Footer Micro-labels -->
+    <footer class="page-footer">
+      <span class="footer-workspace-id">sample-workspace</span>
+      <a href="https://unsplash.com" target="_blank" rel="noopener noreferrer" class="footer-credit">
+        Photo by GoodLifeConstruction
+        <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <line x1="7" y1="17" x2="17" y2="7"></line>
+          <polyline points="7 7 17 7 17 17"></polyline>
+        </svg>
+      </a>
+    </footer>
+  </div>
+
+  <!-- Interactive Modal: AI Attention Spotlight -->
+  <div class="glass-modal-overlay" id="aiModal" aria-hidden="true">
+    <div class="glass-modal-card">
+      <div class="modal-header">
+        <div class="modal-title-with-orb">
+          <div class="iridescent-orb sm"></div>
+          <h3>Atlas Intelligence Spotlight</h3>
+        </div>
+        <button class="modal-close-btn" id="closeAiModalBtn" aria-label="Close modal">&times;</button>
+      </div>
+      <div class="modal-body">
+        <p class="modal-intro">Based on your live signals across 3 interconnected tools, <strong>2 items</strong> need executive attention:</p>
+        <div class="attention-list">
+          <div class="attention-card warning">
+            <div class="attention-badge">Needs Review</div>
+            <h4>Stripe: $1,420 Refund Authorization</h4>
+            <p>High-tier subscriber request exceeded automated threshold ($500). Pending owner sign-off.</p>
+            <div class="attention-actions">
+              <button class="btn-pill-primary sm" onclick="alert('Refund of $1,420 approved!')">Approve Now</button>
+              <button class="btn-pill-glass sm" onclick="alert('Forwarded to Support Lead.')">Delegate</button>
+            </div>
+          </div>
+          <div class="attention-card alert">
+            <div class="attention-badge">Exceptions</div>
+            <h4>Salesforce: Account match paused</h4>
+            <p>5 enterprise records failed fuzzy reconciliation due to domain mismatch on EMEA accounts.</p>
+            <div class="attention-actions">
+              <button class="btn-pill-glass sm" onclick="alert('Resumed synchronization with manual override.')">Resolve Mapping</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Interactive Modal: Owner Review Approval -->
+  <div class="glass-modal-overlay" id="approvalModal" aria-hidden="true">
+    <div class="glass-modal-card">
+      <div class="modal-header">
+        <div class="modal-title-with-orb">
+          <div class="approval-icon-box sm">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <rect x="3" y="3" width="18" height="18" rx="4"></rect>
+              <polyline points="9 11 12 14 22 4"></polyline>
+            </svg>
+          </div>
+          <h3>Owner Approvals Queue</h3>
+        </div>
+        <button class="modal-close-btn" id="closeApprovalModalBtn" aria-label="Close modal">&times;</button>
+      </div>
+      <div class="modal-body">
+        <p class="modal-intro">Pending decisions requiring workspace administrative authority:</p>
+        <div class="attention-list">
+          <div class="attention-card">
+            <h4>Q4 Renewal Sequence Activation</h4>
+            <p>HubSpot targeted sequence for 34 enterprise contracts up for renewal in December.</p>
+            <div class="attention-actions">
+              <button class="btn-pill-primary sm" onclick="alert('Renewal Sequence Activated!')">Approve & Dispatch</button>
+              <button class="btn-pill-glass sm" onclick="alert('Scheduled for next Monday.')">Reschedule</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>

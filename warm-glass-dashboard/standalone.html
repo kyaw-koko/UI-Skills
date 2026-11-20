@@ -1,0 +1,2646 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ATLAS - Command Center</title>
+  <!-- Google Fonts: Plus Jakarta Sans -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+/* ==========================================================================
+   ATLAS COMMAND CENTER - WARM DARK GLASSMORPHISM DESIGN SYSTEM
+   Pixel-perfect implementation of the warm-glass-dashboard specification
+   ========================================================================== */
+
+/* --- Custom Properties / Design Tokens --- */
+:root {
+  /* Canvas & Background */
+  --canvas-bg: #26201D;
+  --canvas-glow-1: #4A382C;
+  --canvas-glow-2: #2E2621;
+
+  /* Glass Shell & Cards */
+  --glass-shell-bg: rgba(44, 37, 33, 0.78);
+  --glass-shell-border: rgba(255, 255, 255, 0.09);
+  --glass-card-bg: rgba(54, 46, 41, 0.60);
+  --glass-card-hover: rgba(62, 53, 47, 0.72);
+  --glass-card-border: rgba(255, 255, 255, 0.08);
+  --glass-inner-border: rgba(232, 223, 213, 0.07);
+
+  /* Featured Accent Card (Automations run) */
+  --featured-card-gradient: linear-gradient(135deg, rgba(43, 91, 83, 0.82) 0%, rgba(31, 66, 60, 0.82) 100%);
+  --featured-card-border: rgba(79, 209, 197, 0.32);
+  --featured-badge-bg: rgba(19, 48, 43, 0.75);
+
+  /* Typography Colors */
+  --text-primary: #F5EFEA;      /* Warm Soft Cream */
+  --text-secondary: #B8AFA6;    /* Muted Sand */
+  --text-muted: #857C74;        /* Warm Taupe */
+  --text-inverse: #1E1916;      /* Dark Espresso */
+
+  /* Semantic Status Tokens */
+  --mint-teal: #5EEAD4;
+  --mint-badge-bg: rgba(94, 234, 212, 0.14);
+  --mint-border: rgba(94, 234, 212, 0.22);
+
+  --coral-terracotta: #FCA5A5;
+  --coral-badge-bg: rgba(248, 113, 113, 0.14);
+  --coral-border: rgba(248, 113, 113, 0.22);
+
+  --sand-neutral: #E8DFD5;
+  --sand-badge-bg: rgba(232, 223, 213, 0.14);
+  --sand-border: rgba(232, 223, 213, 0.20);
+
+  /* Radii */
+  --radius-shell: 28px;
+  --radius-card: 18px;
+  --radius-pill: 9999px;
+
+  /* Font */
+  --font-family: 'Plus Jakarta Sans', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+
+  /* Shadows */
+  --shadow-shell: 0 35px 70px -15px rgba(10, 8, 7, 0.65), 0 0 0 1px rgba(255, 255, 255, 0.08), inset 0 1px 0 rgba(255, 255, 255, 0.12);
+  --shadow-card: 0 10px 24px -5px rgba(10, 8, 7, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.07);
+}
+
+/* --- Global Reset & Box Sizing --- */
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+html, body {
+  min-height: 100vh;
+  font-family: var(--font-family);
+  background-color: var(--canvas-bg);
+  color: var(--text-primary);
+  overflow-x: hidden;
+  position: relative;
+}
+
+.tabular-nums {
+  font-variant-numeric: tabular-nums;
+}
+
+button {
+  font-family: inherit;
+  border: none;
+  background: none;
+  cursor: pointer;
+  outline: none;
+}
+
+/* ==========================================================================
+   AMBIENT BACKDROP & WARM INTERIOR PHOTOGRAPHY
+   ========================================================================== */
+.ambient-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.photo-overlay {
+  position: absolute;
+  inset: -30px;
+  background-image: 
+    linear-gradient(to bottom, rgba(38, 32, 29, 0.80), rgba(28, 22, 19, 0.88)),
+    url('https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=2200&q=80');
+  background-size: cover;
+  background-position: center 30%;
+  filter: blur(16px) brightness(0.68) saturate(1.1);
+  transform: scale(1.05);
+}
+
+.warm-glow {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(100px);
+  opacity: 0.4;
+}
+
+.glow-1 {
+  width: 700px;
+  height: 600px;
+  background: radial-gradient(circle, #634330 0%, rgba(99, 67, 48, 0) 70%);
+  top: -12%;
+  left: 12%;
+}
+
+.glow-2 {
+  width: 750px;
+  height: 650px;
+  background: radial-gradient(circle, #483428 0%, rgba(72, 52, 40, 0) 70%);
+  bottom: -15%;
+  right: 8%;
+}
+
+.vignette-overlay {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at 50% 50%, transparent 40%, rgba(16, 12, 10, 0.78) 100%);
+}
+
+/* ==========================================================================
+   PAGE LAYOUT
+   ========================================================================== */
+.app-layout {
+  position: relative;
+  z-index: 1;
+  max-width: 1140px;
+  margin: 0 auto;
+  padding: 20px 24px 80px 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+/* ==========================================================================
+   TOP FLOATING HEADER CAPSULE
+   ========================================================================== */
+.top-nav-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 52px;
+  padding: 6px 16px;
+  background: rgba(38, 32, 28, 0.75);
+  backdrop-filter: blur(28px) saturate(160%);
+  -webkit-backdrop-filter: blur(28px) saturate(160%);
+  border: 1px solid var(--glass-shell-border);
+  border-radius: var(--radius-pill);
+  box-shadow: 0 10px 28px rgba(12, 10, 8, 0.35);
+}
+
+/* Brand Cluster */
+.brand-cluster {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.brand-avatar {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: #F5EFEA;
+  color: #1E1916;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 800;
+  font-size: 14px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.25);
+}
+
+.brand-meta {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.15;
+}
+
+.brand-name {
+  font-size: 12.5px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  color: var(--text-primary);
+}
+
+.brand-workspace {
+  font-size: 11px;
+  color: var(--text-muted);
+  font-weight: 400;
+}
+
+/* Center AI Search Capsule */
+.ai-search-capsule {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: var(--radius-pill);
+  padding: 6px 16px;
+  min-width: 380px;
+  max-width: 480px;
+  cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.ai-search-capsule:hover {
+  background: rgba(255, 255, 255, 0.07);
+  border-color: rgba(255, 255, 255, 0.15);
+  transform: translateY(-1px);
+}
+
+.iridescent-orb {
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 30% 30%, #e0e7ff 0%, #a855f7 40%, #06b6d4 75%, #10b981 100%);
+  box-shadow: 0 0 10px rgba(168, 85, 247, 0.45), 0 0 16px rgba(6, 182, 212, 0.3);
+  flex-shrink: 0;
+  animation: orbPulse 4s ease-in-out infinite alternate;
+}
+
+.iridescent-orb.sm {
+  width: 15px;
+  height: 15px;
+}
+
+@keyframes orbPulse {
+  0% { transform: scale(0.96); filter: hue-rotate(0deg); }
+  100% { transform: scale(1.05); filter: hue-rotate(30deg); }
+}
+
+.search-placeholder {
+  font-size: 12.5px;
+  color: var(--text-secondary);
+  flex: 1;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.search-icon-btn {
+  color: var(--text-muted);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: color 0.15s ease;
+}
+
+.search-icon-btn:hover {
+  color: var(--text-primary);
+}
+
+/* Top Right Actions */
+.top-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.glass-icon-btn {
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  color: var(--text-secondary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+  position: relative;
+}
+
+.glass-icon-btn:hover {
+  background: rgba(255, 255, 255, 0.09);
+  color: var(--text-primary);
+  border-color: rgba(255, 255, 255, 0.15);
+}
+
+.notification-badge-dot {
+  position: absolute;
+  top: 7px;
+  right: 7px;
+  width: 5px;
+  height: 5px;
+  background-color: #F87171;
+  border-radius: 50%;
+  box-shadow: 0 0 6px #F87171;
+}
+
+/* ==========================================================================
+   WORKSPACE WRAPPER & FLOATING LEFT RAIL
+   ========================================================================== */
+.workspace-wrapper {
+  position: relative;
+  width: 100%;
+}
+
+/* Left Floating Icon Rail (Overlapping on the left edge as shown in reference) */
+.left-floating-rail {
+  position: absolute;
+  left: -20px;
+  top: 250px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 5px;
+  background: rgba(36, 30, 26, 0.88);
+  backdrop-filter: blur(28px) saturate(160%);
+  -webkit-backdrop-filter: blur(28px) saturate(160%);
+  border: 1px solid var(--glass-shell-border);
+  border-radius: var(--radius-pill);
+  box-shadow: 0 16px 36px rgba(10, 8, 7, 0.45);
+  z-index: 25;
+}
+
+.rail-btn {
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-muted);
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.rail-btn:hover {
+  color: var(--text-primary);
+  background: rgba(255, 255, 255, 0.08);
+}
+
+/* Active State: Warm Cream Pill */
+.rail-btn.active {
+  background: #F5EFEA;
+  color: #1E1916;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+}
+
+/* ==========================================================================
+   MAIN GLASS WORKSPACE SHELL
+   ========================================================================== */
+.main-glass-shell {
+  width: 100%;
+  background: var(--glass-shell-bg);
+  backdrop-filter: blur(34px) saturate(160%);
+  -webkit-backdrop-filter: blur(34px) saturate(160%);
+  border: 1px solid var(--glass-shell-border);
+  border-radius: var(--radius-shell);
+  box-shadow: var(--shadow-shell);
+  padding: 28px 32px 32px 32px;
+}
+
+/* Shell Header */
+.shell-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  margin-bottom: 24px;
+}
+
+.page-title {
+  font-size: 32px;
+  font-weight: 700;
+  letter-spacing: -0.025em;
+  color: var(--text-primary);
+  line-height: 1.15;
+}
+
+.page-subtitle {
+  font-size: 13px;
+  color: var(--text-secondary);
+  margin-top: 4px;
+  font-weight: 400;
+}
+
+/* Time Range Switcher */
+.time-range-switcher {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: var(--radius-pill);
+  padding: 3px;
+}
+
+.range-pill {
+  padding: 6px 16px;
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--text-secondary);
+  border-radius: var(--radius-pill);
+  transition: all 0.2s ease;
+}
+
+.range-pill:hover {
+  color: var(--text-primary);
+}
+
+.range-pill.active {
+  background: #F5EFEA;
+  color: #1E1916;
+  font-weight: 600;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25);
+}
+
+/* ==========================================================================
+   12-COLUMN RESPONSIVE BENTO GRID
+   ========================================================================== */
+.bento-grid {
+  display: grid;
+  grid-template-columns: repeat(12, 1fr);
+  gap: 14px;
+}
+
+.col-span-4 {
+  grid-column: span 4;
+}
+
+.col-span-8 {
+  grid-column: span 8;
+}
+
+/* Bento Card Universal Styles */
+.bento-card {
+  background: var(--glass-card-bg);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid var(--glass-card-border);
+  border-radius: var(--radius-card);
+  padding: 20px;
+  box-shadow: var(--shadow-card);
+  transition: border-color 0.2s ease, background 0.2s ease;
+  position: relative;
+}
+
+.bento-card:hover {
+  border-color: rgba(255, 255, 255, 0.12);
+}
+
+.card-title {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.card-label {
+  font-size: 12.5px;
+  font-weight: 500;
+  color: var(--text-secondary);
+}
+
+/* ==========================================================================
+   ROW 1, CARD 1: HERO REVENUE CARD
+   ========================================================================== */
+.hero-revenue-card {
+  display: flex;
+  flex-direction: column;
+}
+
+.card-top-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.currency-tag {
+  font-size: 10.5px;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  color: var(--text-muted);
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 6px;
+  padding: 2px 7px;
+}
+
+.revenue-hero-metric {
+  font-size: 38px;
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  color: var(--text-primary);
+  margin-top: 10px;
+  line-height: 1.1;
+  font-variant-numeric: tabular-nums;
+}
+
+.trend-pill-wrapper {
+  margin-top: 6px;
+}
+
+.trend-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 11.5px;
+  font-weight: 500;
+  color: var(--mint-teal);
+}
+
+/* Dual Button Row */
+.revenue-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 18px;
+}
+
+.btn-pill-primary {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: #F5EFEA;
+  color: #1E1916;
+  font-size: 12.5px;
+  font-weight: 600;
+  padding: 7px 16px;
+  border-radius: var(--radius-pill);
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+}
+
+.btn-pill-primary:hover {
+  background: #FFFFFF;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+}
+
+.btn-pill-primary.sm {
+  padding: 6px 14px;
+  font-size: 12px;
+}
+
+.btn-pill-glass {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.09);
+  color: var(--text-primary);
+  font-size: 12.5px;
+  font-weight: 500;
+  padding: 7px 16px;
+  border-radius: var(--radius-pill);
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.btn-pill-glass:hover {
+  background: rgba(255, 255, 255, 0.11);
+  border-color: rgba(255, 255, 255, 0.16);
+  transform: translateY(-1px);
+}
+
+.btn-pill-glass.sm {
+  padding: 6px 14px;
+  font-size: 12px;
+}
+
+/* 3-Column Mini Breakdown Footer */
+.revenue-breakdown {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+  margin-top: auto;
+  padding-top: 18px;
+  border-top: 1px solid var(--glass-inner-border);
+}
+
+.breakdown-item {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.breakdown-label {
+  font-size: 11px;
+  color: var(--text-muted);
+}
+
+.breakdown-value {
+  font-size: 13.5px;
+  font-weight: 600;
+  color: var(--text-primary);
+  font-variant-numeric: tabular-nums;
+}
+
+/* ==========================================================================
+   ROW 1, CARD 2: 2x2 NESTED KPI GRID
+   ========================================================================== */
+.bento-kpi-subgrid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  grid-template-rows: repeat(2, 1fr);
+  gap: 10px;
+}
+
+.kpi-card {
+  padding: 14px 16px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.kpi-card-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.kpi-card-title {
+  font-size: 12.5px;
+  font-weight: 500;
+  color: var(--text-secondary);
+}
+
+.mini-icon-ghost {
+  color: var(--text-muted);
+  display: flex;
+  align-items: center;
+}
+
+.kpi-card-number {
+  font-size: 24px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  color: var(--text-primary);
+  margin: 6px 0 4px 0;
+  line-height: 1.1;
+}
+
+.kpi-card-note {
+  font-size: 11px;
+  color: var(--text-muted);
+}
+
+/* Featured Mint Glass Accent Card */
+.kpi-card-featured {
+  background: var(--featured-card-gradient);
+  border: 1px solid var(--featured-card-border);
+  padding: 14px 16px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  box-shadow: 0 10px 24px -6px rgba(31, 66, 60, 0.45);
+}
+
+.kpi-card-featured .kpi-card-title {
+  color: #A7F3D0;
+}
+
+.mini-icon-badge {
+  width: 22px;
+  height: 22px;
+  border-radius: 6px;
+  background: rgba(94, 234, 212, 0.2);
+  color: #5EEAD4;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.badge-mint-contained {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  background: var(--featured-badge-bg);
+  color: #5EEAD4;
+  font-size: 10.5px;
+  font-weight: 500;
+  padding: 2px 7px;
+  border-radius: var(--radius-pill);
+  border: 1px solid rgba(94, 234, 212, 0.25);
+}
+
+.badge-mint-ghost {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  color: #5EEAD4;
+  font-size: 10.5px;
+  font-weight: 500;
+}
+
+.badge-coral-ghost {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  color: var(--coral-terracotta);
+  font-size: 10.5px;
+  font-weight: 500;
+}
+
+/* ==========================================================================
+   ROW 1, CARD 3: AUTOMATION ACTIVITY BAR CHART
+   ========================================================================== */
+.chart-card {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.chart-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  margin-bottom: 20px;
+}
+
+.chart-subtitle {
+  font-size: 11px;
+  color: var(--text-muted);
+  margin-top: 3px;
+}
+
+.chart-legend {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 11px;
+  color: var(--text-secondary);
+}
+
+.legend-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+}
+
+.dot-complete {
+  background-color: #F5EFEA;
+}
+
+.dot-review {
+  background-color: var(--mint-teal);
+}
+
+/* Custom Dual-Tone Bar Chart */
+.bento-bar-chart {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  height: 130px;
+  padding: 0 4px 4px 4px;
+  position: relative;
+  border-bottom: 1px solid var(--glass-inner-border);
+}
+
+.chart-bar-col {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  height: 100%;
+  justify-content: flex-end;
+  cursor: pointer;
+  transition: transform 0.2s ease;
+}
+
+.chart-bar-col:hover {
+  transform: translateY(-2px);
+}
+
+.bar-pillar {
+  width: 20px;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  position: relative;
+}
+
+/* Stacked bar segments */
+.bar-segment-review {
+  background: var(--mint-teal);
+  border-top-left-radius: 5px;
+  border-top-right-radius: 5px;
+  width: 100%;
+  transition: height 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.bar-segment-complete {
+  background: #F5EFEA;
+  width: 100%;
+  transition: height 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.chart-bar-col:hover .bar-pillar {
+  filter: brightness(1.1);
+}
+
+.bar-label {
+  font-size: 10.5px;
+  color: var(--text-muted);
+  font-weight: 500;
+}
+
+.chart-bar-col:hover .bar-label,
+.chart-bar-col.active-bar .bar-label {
+  color: var(--text-primary);
+}
+
+/* Chart Tooltip */
+.chart-tooltip {
+  position: absolute;
+  top: 6px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(30, 25, 22, 0.95);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-radius: 10px;
+  padding: 8px 12px;
+  font-size: 11px;
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.4);
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.15s ease, transform 0.15s ease;
+  z-index: 10;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.chart-tooltip.visible {
+  opacity: 1;
+}
+
+.tooltip-header {
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: 2px;
+}
+
+.tooltip-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--text-secondary);
+}
+
+/* ==========================================================================
+   ROW 2, LEFT STACK: CAPACITY & APPROVALS
+   ========================================================================== */
+.bento-left-stack {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+/* Automation Capacity */
+.capacity-card {
+  padding: 16px 18px;
+}
+
+.capacity-progress-track {
+  width: 100%;
+  height: 6px;
+  background: rgba(255, 255, 255, 0.08);
+  border-radius: var(--radius-pill);
+  margin: 12px 0 8px 0;
+  overflow: hidden;
+  position: relative;
+}
+
+.capacity-progress-fill {
+  height: 100%;
+  background: var(--mint-teal);
+  border-radius: var(--radius-pill);
+  box-shadow: 0 0 12px rgba(94, 234, 212, 0.5);
+  transition: width 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.capacity-meta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.capacity-used {
+  font-size: 11.5px;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.capacity-total {
+  font-size: 11.5px;
+  color: var(--text-muted);
+}
+
+/* Approvals Card */
+.approvals-card {
+  padding: 16px 18px;
+}
+
+.card-subtitle-small {
+  font-size: 11.5px;
+  color: var(--text-muted);
+  margin-top: 2px;
+  margin-bottom: 10px;
+}
+
+.approval-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: rgba(255, 255, 255, 0.035);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 12px;
+  padding: 9px 12px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.approval-item:hover {
+  background: rgba(255, 255, 255, 0.07);
+  border-color: rgba(255, 255, 255, 0.12);
+  transform: translateY(-1px);
+}
+
+.approval-icon-box {
+  width: 30px;
+  height: 30px;
+  border-radius: 7px;
+  background: rgba(94, 234, 212, 0.12);
+  border: 1px solid rgba(94, 234, 212, 0.25);
+  color: var(--mint-teal);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.approval-icon-box.sm {
+  width: 26px;
+  height: 26px;
+}
+
+.approval-text {
+  flex: 1;
+}
+
+.approval-title {
+  font-size: 12.5px;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.approval-desc {
+  font-size: 11px;
+  color: var(--text-muted);
+}
+
+.approval-arrow-btn {
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.06);
+  color: var(--text-secondary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+}
+
+.approval-item:hover .approval-arrow-btn {
+  background: #F5EFEA;
+  color: #1E1916;
+}
+
+/* ==========================================================================
+   ROW 2, RIGHT: RECENT ACTIVITY TABLE CARD (8 cols)
+   ========================================================================== */
+.table-card {
+  display: flex;
+  flex-direction: column;
+}
+
+.table-card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 16px;
+}
+
+.table-controls {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* Table Search Pill */
+.table-search-pill {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: var(--radius-pill);
+  padding: 5px 12px;
+  width: 160px;
+  transition: all 0.2s ease;
+}
+
+.table-search-pill:focus-within {
+  width: 190px;
+  background: rgba(255, 255, 255, 0.08);
+  border-color: rgba(255, 255, 255, 0.18);
+}
+
+.table-search-pill svg {
+  color: var(--text-muted);
+  flex-shrink: 0;
+}
+
+.table-search-pill input {
+  background: transparent;
+  border: none;
+  outline: none;
+  font-family: inherit;
+  font-size: 11.5px;
+  color: var(--text-primary);
+  width: 100%;
+}
+
+.table-search-pill input::placeholder {
+  color: var(--text-muted);
+}
+
+/* Status Filter Dropdown */
+.status-dropdown-wrapper {
+  position: relative;
+}
+
+.status-dropdown-btn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: var(--radius-pill);
+  padding: 5px 12px;
+  font-size: 11.5px;
+  color: var(--text-primary);
+  transition: all 0.2s ease;
+}
+
+.status-dropdown-btn:hover {
+  background: rgba(255, 255, 255, 0.08);
+  border-color: rgba(255, 255, 255, 0.16);
+}
+
+.status-dropdown-btn svg {
+  color: var(--text-muted);
+}
+
+.status-dropdown-menu {
+  position: absolute;
+  top: calc(100% + 6px);
+  right: 0;
+  width: 150px;
+  background: rgba(34, 28, 25, 0.96);
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 12px;
+  padding: 5px;
+  box-shadow: 0 14px 28px rgba(0, 0, 0, 0.45);
+  display: none;
+  flex-direction: column;
+  gap: 2px;
+  z-index: 30;
+}
+
+.status-dropdown-menu.show {
+  display: flex;
+}
+
+.dropdown-option {
+  padding: 6px 10px;
+  font-size: 11.5px;
+  color: var(--text-secondary);
+  border-radius: 6px;
+  text-align: left;
+  transition: all 0.15s ease;
+}
+
+.dropdown-option:hover {
+  background: rgba(255, 255, 255, 0.08);
+  color: var(--text-primary);
+}
+
+.dropdown-option.active {
+  background: rgba(255, 255, 255, 0.12);
+  color: var(--text-primary);
+  font-weight: 600;
+}
+
+/* Activity Table */
+.table-container {
+  overflow-x: auto;
+  margin-top: 2px;
+}
+
+.activity-table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+}
+
+.activity-table th {
+  font-size: 11.5px;
+  font-weight: 500;
+  color: var(--text-muted);
+  padding: 0 8px 10px 8px;
+  border-bottom: 1px solid var(--glass-inner-border);
+}
+
+.activity-table th:first-child {
+  padding-left: 0;
+}
+
+.activity-table th:last-child {
+  padding-right: 0;
+  text-align: right;
+}
+
+.activity-row {
+  border-bottom: 1px solid rgba(255, 255, 255, 0.035);
+  transition: background 0.15s ease;
+}
+
+.activity-row:hover {
+  background: rgba(255, 255, 255, 0.025);
+}
+
+.activity-row:last-child {
+  border-bottom: none;
+}
+
+.activity-table td {
+  padding: 11px 8px;
+  font-size: 12px;
+  vertical-align: middle;
+}
+
+.activity-table td:first-child {
+  padding-left: 0;
+}
+
+.activity-table td:last-child {
+  padding-right: 0;
+  text-align: right;
+}
+
+.col-activity {
+  font-weight: 500;
+  color: var(--text-primary);
+}
+
+.col-source {
+  color: var(--text-secondary);
+}
+
+.col-time {
+  color: var(--text-muted);
+  font-size: 11.5px;
+}
+
+/* Status Badges */
+.status-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 11px;
+  font-weight: 500;
+  padding: 2.5px 9px;
+  border-radius: var(--radius-pill);
+}
+
+.status-dot {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+}
+
+.badge-complete {
+  background: var(--mint-badge-bg);
+  color: var(--mint-teal);
+  border: 1px solid var(--mint-border);
+}
+
+.badge-complete .status-dot {
+  background: var(--mint-teal);
+}
+
+.badge-review {
+  background: var(--coral-badge-bg);
+  color: var(--coral-terracotta);
+  border: 1px solid var(--coral-border);
+}
+
+.badge-review .status-dot {
+  background: var(--coral-terracotta);
+}
+
+.badge-scheduled {
+  background: var(--sand-badge-bg);
+  color: var(--sand-neutral);
+  border: 1px solid var(--sand-border);
+}
+
+.badge-scheduled .status-dot {
+  background: var(--sand-neutral);
+}
+
+.badge-exceptions {
+  background: var(--coral-badge-bg);
+  color: var(--coral-terracotta);
+  border: 1px solid var(--coral-border);
+}
+
+.badge-exceptions .status-dot {
+  background: var(--coral-terracotta);
+}
+
+.empty-state-message {
+  padding: 28px;
+  text-align: center;
+  color: var(--text-muted);
+  font-size: 12.5px;
+}
+
+/* ==========================================================================
+   FLOATING BOTTOM NAVIGATION DOCK
+   ========================================================================== */
+.bottom-floating-dock {
+  align-self: center;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 5px;
+  background: rgba(36, 30, 27, 0.92);
+  backdrop-filter: blur(28px) saturate(160%);
+  -webkit-backdrop-filter: blur(28px) saturate(160%);
+  border: 1px solid var(--glass-shell-border);
+  border-radius: var(--radius-pill);
+  box-shadow: 0 16px 36px rgba(10, 8, 7, 0.5);
+  margin-top: 6px;
+}
+
+.dock-btn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 7px 16px;
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--text-secondary);
+  border-radius: var(--radius-pill);
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.dock-btn svg {
+  color: currentColor;
+}
+
+.dock-btn:hover {
+  color: var(--text-primary);
+  background: rgba(255, 255, 255, 0.06);
+}
+
+/* Active State: Solid Warm Cream Pill */
+.dock-btn.active {
+  background: #F5EFEA;
+  color: #1E1916;
+  font-weight: 600;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25);
+}
+
+/* ==========================================================================
+   PAGE FOOTER MICRO-LABELS
+   ========================================================================== */
+.page-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 4px;
+  font-size: 11px;
+  color: var(--text-muted);
+  margin-top: 2px;
+}
+
+.footer-workspace-id {
+  letter-spacing: 0.02em;
+}
+
+.footer-credit {
+  color: var(--text-muted);
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  transition: color 0.15s ease;
+}
+
+.footer-credit:hover {
+  color: var(--text-secondary);
+}
+
+/* ==========================================================================
+   INTERACTIVE MODAL DIALOGS
+   ========================================================================== */
+.glass-modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(14, 11, 9, 0.72);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  padding: 20px;
+}
+
+.glass-modal-overlay.open {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.glass-modal-card {
+  width: 100%;
+  max-width: 480px;
+  background: rgba(44, 37, 33, 0.95);
+  backdrop-filter: blur(30px);
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-radius: var(--radius-shell);
+  box-shadow: 0 25px 60px rgba(0, 0, 0, 0.6);
+  padding: 24px;
+  transform: translateY(16px) scale(0.97);
+  transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.glass-modal-overlay.open .glass-modal-card {
+  transform: translateY(0) scale(1);
+}
+
+.modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 16px;
+}
+
+.modal-title-with-orb {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.modal-title-with-orb h3 {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.modal-close-btn {
+  font-size: 22px;
+  line-height: 1;
+  color: var(--text-muted);
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.15s ease;
+}
+
+.modal-close-btn:hover {
+  background: rgba(255, 255, 255, 0.1);
+  color: var(--text-primary);
+}
+
+.modal-intro {
+  font-size: 12.5px;
+  color: var(--text-secondary);
+  margin-bottom: 14px;
+  line-height: 1.5;
+}
+
+.modal-intro strong {
+  color: var(--text-primary);
+}
+
+.attention-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.attention-card {
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 14px;
+  padding: 14px;
+  position: relative;
+}
+
+.attention-badge {
+  font-size: 10px;
+  font-weight: 600;
+  display: inline-block;
+  padding: 2px 7px;
+  border-radius: var(--radius-pill);
+  margin-bottom: 6px;
+}
+
+.attention-card.warning .attention-badge {
+  background: var(--coral-badge-bg);
+  color: var(--coral-terracotta);
+  border: 1px solid var(--coral-border);
+}
+
+.attention-card.alert .attention-badge {
+  background: rgba(245, 158, 11, 0.15);
+  color: #FBBF24;
+  border: 1px solid rgba(245, 158, 11, 0.25);
+}
+
+.attention-card h4 {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: 4px;
+}
+
+.attention-card p {
+  font-size: 11.5px;
+  color: var(--text-secondary);
+  line-height: 1.45;
+  margin-bottom: 10px;
+}
+
+.attention-actions {
+  display: flex;
+  gap: 8px;
+}
+
+/* ==========================================================================
+   RESPONSIVE MEDIA QUERIES
+   ========================================================================== */
+@media (max-width: 1200px) {
+  .left-floating-rail {
+    left: 8px;
+    top: 180px;
+  }
+}
+
+@media (max-width: 1024px) {
+  .left-floating-rail {
+    display: none; /* Relies on bottom floating dock on medium/small viewports */
+  }
+
+  .col-span-4 {
+    grid-column: span 6;
+  }
+
+  .chart-card {
+    grid-column: span 12;
+  }
+
+  .bento-left-stack {
+    grid-column: span 12;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .col-span-8 {
+    grid-column: span 12;
+  }
+}
+
+@media (max-width: 768px) {
+  .app-layout {
+    padding: 12px 12px 80px 12px;
+  }
+
+  .top-nav-bar {
+    height: auto;
+    padding: 8px 12px;
+    flex-wrap: wrap;
+    gap: 10px;
+    border-radius: 20px;
+  }
+
+  .ai-search-capsule {
+    order: 3;
+    min-width: 100%;
+    width: 100%;
+  }
+
+  .main-glass-shell {
+    padding: 20px 16px;
+    border-radius: 20px;
+  }
+
+  .shell-header {
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .col-span-4, .col-span-8 {
+    grid-column: span 12;
+  }
+
+  .bento-kpi-subgrid {
+    grid-template-columns: 1fr;
+  }
+
+  .bento-left-stack {
+    grid-template-columns: 1fr;
+  }
+
+  .table-controls {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .table-search-pill {
+    width: 100%;
+  }
+
+  .bottom-floating-dock {
+    width: calc(100% - 24px);
+    justify-content: space-around;
+  }
+
+  .dock-btn span {
+    display: none;
+  }
+
+  .dock-btn {
+    padding: 8px;
+  }
+}
+
+</style>
+</head>
+<body>
+  <!-- Ambient Backdrop with Photo Overlay & Warm Blur -->
+  <div class="ambient-backdrop">
+    <div class="photo-overlay"></div>
+    <div class="warm-glow glow-1"></div>
+    <div class="warm-glow glow-2"></div>
+    <div class="vignette-overlay"></div>
+  </div>
+
+  <div class="app-layout">
+    <!-- Top Floating Header Capsule -->
+    <header class="top-nav-bar">
+      <!-- Left: Brand / Workspace Info -->
+      <div class="brand-cluster">
+        <div class="brand-avatar">
+          <span class="avatar-letter">A</span>
+        </div>
+        <div class="brand-meta">
+          <span class="brand-name">ATLAS</span>
+          <span class="brand-workspace">Workspace</span>
+        </div>
+      </div>
+
+      <!-- Center: AI Search / Command Input Capsule -->
+      <div class="ai-search-capsule" id="aiSearchTrigger" role="button" tabindex="0" title="Click to ask Atlas AI">
+        <div class="iridescent-orb" aria-hidden="true"></div>
+        <span class="search-placeholder">Show me what needs attention.</span>
+        <button class="search-icon-btn" aria-label="Search">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="11" cy="11" r="8"></circle>
+            <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+          </svg>
+        </button>
+      </div>
+
+      <!-- Right: Action Buttons -->
+      <div class="top-actions">
+        <button class="glass-icon-btn" id="themeToggleBtn" aria-label="Appearance & Themes" title="Ambient Lighting Settings">
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
+          </svg>
+        </button>
+
+        <button class="glass-icon-btn notification-btn" id="notificationBtn" aria-label="Notifications" title="2 Pending Notifications">
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>
+            <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
+          </svg>
+          <span class="notification-badge-dot"></span>
+        </button>
+      </div>
+    </header>
+
+    <!-- Main Workspace Container Wrapper with Floating Left Rail -->
+    <div class="workspace-wrapper">
+      <!-- Floating Left Icon Rail -->
+      <aside class="left-floating-rail" aria-label="Quick Navigation">
+        <button class="rail-btn active" data-nav="command-center" aria-label="Command Center" title="Command Center">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="3" y="3" width="7" height="7" rx="1.5"></rect>
+            <rect x="14" y="3" width="7" height="7" rx="1.5"></rect>
+            <rect x="14" y="14" width="7" height="7" rx="1.5"></rect>
+            <rect x="3" y="14" width="7" height="7" rx="1.5"></rect>
+          </svg>
+        </button>
+        <button class="rail-btn" data-nav="trends" aria-label="Trends" title="Trends & Growth">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="23 6 13.5 15.5 8.5 10.5 1 18"></polyline>
+            <polyline points="17 6 23 6 23 12"></polyline>
+          </svg>
+        </button>
+        <button class="rail-btn" data-nav="metrics" aria-label="Metrics" title="Analytics & Metrics">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="18" y1="20" x2="18" y2="10"></line>
+            <line x1="12" y1="20" x2="12" y2="4"></line>
+            <line x1="6" y1="20" x2="6" y2="14"></line>
+          </svg>
+        </button>
+        <button class="rail-btn" data-nav="operations" aria-label="Premium Operations" title="Operations & Team">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="2" y="7" width="20" height="14" rx="2" ry="2"></rect>
+            <path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"></path>
+          </svg>
+        </button>
+      </aside>
+
+      <!-- Main Bento Glass Container -->
+      <main class="main-glass-shell">
+        <!-- Section Header -->
+        <div class="shell-header">
+          <div class="header-titles">
+            <h1 class="page-title">Command Center</h1>
+            <p class="page-subtitle">Revenue, automations, and what needs your attention.</p>
+          </div>
+
+          <!-- Time Range Pill Switcher -->
+          <div class="time-range-switcher" role="tablist" aria-label="Select Date Range">
+            <button class="range-pill" role="tab" aria-selected="false" data-range="7">7 days</button>
+            <button class="range-pill active" role="tab" aria-selected="true" data-range="30">30 days</button>
+            <button class="range-pill" role="tab" aria-selected="false" data-range="90">90 days</button>
+          </div>
+        </div>
+
+        <!-- 12-Column Responsive Bento Grid -->
+        <div class="bento-grid">
+          
+          <!-- ROW 1, COL 1: Hero Revenue Card (4 cols) -->
+          <article class="bento-card hero-revenue-card col-span-4">
+            <div class="card-top-row">
+              <span class="card-label">Total revenue</span>
+              <span class="currency-tag">USD</span>
+            </div>
+
+            <div class="revenue-hero-metric">
+              <span class="kpi-symbol">$</span><span class="kpi-value" id="kpiRevenue">47,200</span>
+            </div>
+
+            <div class="trend-pill-wrapper">
+              <span class="trend-pill trend-up">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                  <line x1="7" y1="17" x2="17" y2="7"></line>
+                  <polyline points="7 7 17 7 17 17"></polyline>
+                </svg>
+                <span id="kpiRevenueTrend">+8.3%</span> vs prior period
+              </span>
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="revenue-actions">
+              <button class="btn-pill-primary" id="btnViewTrends">
+                <span>View trends</span>
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <line x1="7" y1="17" x2="17" y2="7"></line>
+                  <polyline points="7 7 17 7 17 17"></polyline>
+                </svg>
+              </button>
+              <button class="btn-pill-glass" id="btnViewMetrics">
+                <span>View metrics</span>
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <line x1="7" y1="17" x2="17" y2="7"></line>
+                  <polyline points="7 7 17 7 17 17"></polyline>
+                </svg>
+              </button>
+            </div>
+
+            <!-- Mini Breakdown Footer -->
+            <div class="revenue-breakdown">
+              <div class="breakdown-item">
+                <span class="breakdown-label">Subscriptions</span>
+                <span class="breakdown-value" id="kpiSubscriptions">$32,379</span>
+              </div>
+              <div class="breakdown-item">
+                <span class="breakdown-label">Services</span>
+                <span class="breakdown-value" id="kpiServices">$9,818</span>
+              </div>
+              <div class="breakdown-item">
+                <span class="breakdown-label">Add-ons</span>
+                <span class="breakdown-value" id="kpiAddons">$5,003</span>
+              </div>
+            </div>
+          </article>
+
+          <!-- ROW 1, COL 2: 2x2 Nested KPI Grid (4 cols) -->
+          <div class="bento-kpi-subgrid col-span-4">
+            <!-- 1. Automations run (Mint Slate Featured Accent Card) -->
+            <article class="bento-card kpi-card-featured">
+              <div class="kpi-card-head">
+                <span class="kpi-card-title">Automations run</span>
+                <div class="mini-icon-badge" title="Active workflows">
+                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon>
+                  </svg>
+                </div>
+              </div>
+              <div class="kpi-card-number tabular-nums" id="kpiAutomations">1,284</div>
+              <div class="kpi-card-badge">
+                <span class="badge-mint-contained">
+                  <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                    <line x1="7" y1="17" x2="17" y2="7"></line>
+                    <polyline points="7 7 17 7 17 17"></polyline>
+                  </svg>
+                  <span>+9.5%</span> vs prior period
+                </span>
+              </div>
+            </article>
+
+            <!-- 2. Subscribers -->
+            <article class="bento-card kpi-card">
+              <div class="kpi-card-head">
+                <span class="kpi-card-title">Subscribers</span>
+                <div class="mini-icon-ghost" title="Audience">
+                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                    <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+                    <circle cx="9" cy="7" r="4"></circle>
+                    <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+                    <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+                  </svg>
+                </div>
+              </div>
+              <div class="kpi-card-number tabular-nums" id="kpiSubscribers">1,847</div>
+              <div class="kpi-card-badge">
+                <span class="badge-mint-ghost">
+                  <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                    <line x1="7" y1="17" x2="17" y2="7"></line>
+                    <polyline points="7 7 17 7 17 17"></polyline>
+                  </svg>
+                  <span>+124</span> this month
+                </span>
+              </div>
+            </article>
+
+            <!-- 3. Churn rate -->
+            <article class="bento-card kpi-card">
+              <div class="kpi-card-head">
+                <span class="kpi-card-title">Churn rate</span>
+                <div class="mini-icon-ghost" title="Retention">
+                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                    <polyline points="23 18 13.5 8.5 8.5 13.5 1 6"></polyline>
+                    <polyline points="17 18 23 18 23 12"></polyline>
+                  </svg>
+                </div>
+              </div>
+              <div class="kpi-card-number tabular-nums" id="kpiChurn">4.2%</div>
+              <div class="kpi-card-badge">
+                <span class="badge-coral-ghost">
+                  <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                    <line x1="7" y1="7" x2="17" y2="17"></line>
+                    <polyline points="17 7 17 17 7 17"></polyline>
+                  </svg>
+                  <span>-0.5%</span> vs prior period
+                </span>
+              </div>
+            </article>
+
+            <!-- 4. Open tickets -->
+            <article class="bento-card kpi-card">
+              <div class="kpi-card-head">
+                <span class="kpi-card-title">Open tickets</span>
+                <div class="mini-icon-ghost" title="Support queue">
+                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                    <line x1="4" y1="21" x2="4" y2="14"></line>
+                    <line x1="4" y1="10" x2="4" y2="3"></line>
+                    <line x1="12" y1="21" x2="12" y2="12"></line>
+                    <line x1="12" y1="8" x2="12" y2="3"></line>
+                    <line x1="20" y1="21" x2="20" y2="16"></line>
+                    <line x1="20" y1="12" x2="20" y2="3"></line>
+                    <line x1="1" y1="14" x2="7" y2="14"></line>
+                    <line x1="9" y1="8" x2="15" y2="8"></line>
+                    <line x1="17" y1="16" x2="23" y2="16"></line>
+                  </svg>
+                </div>
+              </div>
+              <div class="kpi-card-number tabular-nums" id="kpiTickets">12</div>
+              <div class="kpi-card-note">
+                <span id="kpiTicketsSub">9 resolved today</span>
+              </div>
+            </article>
+          </div>
+
+          <!-- ROW 1, COL 3: Automation Activity Dual-tone Bar Chart (4 cols) -->
+          <article class="bento-card col-span-4 chart-card">
+            <div class="chart-header">
+              <div class="chart-title-group">
+                <h3 class="card-title">Automation activity</h3>
+                <p class="chart-subtitle">Completed and sent to review &middot; last 7 days</p>
+              </div>
+              <div class="chart-legend">
+                <span class="legend-item"><span class="legend-dot dot-complete"></span> Complete</span>
+                <span class="legend-item"><span class="legend-dot dot-review"></span> Review</span>
+              </div>
+            </div>
+
+            <!-- Custom Dual-tone Rounded Bar Chart -->
+            <div class="bento-bar-chart" id="barChartContainer">
+              <!-- Day: Tue -->
+              <div class="chart-bar-col" data-day="Tue" data-complete="142" data-review="22">
+                <div class="bar-pillar">
+                  <div class="bar-segment-review" style="height: 14%;"></div>
+                  <div class="bar-segment-complete" style="height: 48%;"></div>
+                </div>
+                <span class="bar-label">Tue</span>
+              </div>
+
+              <!-- Day: Wed -->
+              <div class="chart-bar-col" data-day="Wed" data-complete="158" data-review="26">
+                <div class="bar-pillar">
+                  <div class="bar-segment-review" style="height: 15%;"></div>
+                  <div class="bar-segment-complete" style="height: 52%;"></div>
+                </div>
+                <span class="bar-label">Wed</span>
+              </div>
+
+              <!-- Day: Thu -->
+              <div class="chart-bar-col" data-day="Thu" data-complete="176" data-review="30">
+                <div class="bar-pillar">
+                  <div class="bar-segment-review" style="height: 16%;"></div>
+                  <div class="bar-segment-complete" style="height: 58%;"></div>
+                </div>
+                <span class="bar-label">Thu</span>
+              </div>
+
+              <!-- Day: Fri -->
+              <div class="chart-bar-col" data-day="Fri" data-complete="210" data-review="35">
+                <div class="bar-pillar">
+                  <div class="bar-segment-review" style="height: 18%;"></div>
+                  <div class="bar-segment-complete" style="height: 70%;"></div>
+                </div>
+                <span class="bar-label">Fri</span>
+              </div>
+
+              <!-- Day: Sat -->
+              <div class="chart-bar-col" data-day="Sat" data-complete="120" data-review="18">
+                <div class="bar-pillar">
+                  <div class="bar-segment-review" style="height: 12%;"></div>
+                  <div class="bar-segment-complete" style="height: 38%;"></div>
+                </div>
+                <span class="bar-label">Sat</span>
+              </div>
+
+              <!-- Day: Sun -->
+              <div class="chart-bar-col" data-day="Sun" data-complete="185" data-review="28">
+                <div class="bar-pillar">
+                  <div class="bar-segment-review" style="height: 15%;"></div>
+                  <div class="bar-segment-complete" style="height: 62%;"></div>
+                </div>
+                <span class="bar-label">Sun</span>
+              </div>
+
+              <!-- Day: Mon -->
+              <div class="chart-bar-col active-bar" data-day="Mon" data-complete="245" data-review="42">
+                <div class="bar-pillar">
+                  <div class="bar-segment-review" style="height: 20%;"></div>
+                  <div class="bar-segment-complete" style="height: 78%;"></div>
+                </div>
+                <span class="bar-label">Mon</span>
+              </div>
+            </div>
+
+            <!-- Chart Floating Tooltip (Dynamic) -->
+            <div class="chart-tooltip" id="chartTooltip" aria-hidden="true">
+              <div class="tooltip-header"><span id="tooltipDay">Mon</span> Overview</div>
+              <div class="tooltip-row"><span class="dot-complete"></span> Complete: <strong id="tooltipComplete">245</strong></div>
+              <div class="tooltip-row"><span class="dot-review"></span> In Review: <strong id="tooltipReview">42</strong></div>
+            </div>
+          </article>
+
+          <!-- ROW 2, LEFT STACK: Capacity & Approvals (4 cols) -->
+          <div class="bento-left-stack col-span-4">
+            <!-- Capacity Progress Card -->
+            <article class="bento-card capacity-card">
+              <div class="card-top-row">
+                <span class="card-title">Automation capacity</span>
+              </div>
+              <div class="capacity-progress-track">
+                <div class="capacity-progress-fill" id="capacityFill" style="width: 40.1%;"></div>
+              </div>
+              <div class="capacity-meta">
+                <span class="capacity-used tabular-nums" id="capacityUsed">1,284 used</span>
+                <span class="capacity-total tabular-nums" id="capacityTotal">3,200 monthly runs</span>
+              </div>
+            </article>
+
+            <!-- Approvals Action Card -->
+            <article class="bento-card approvals-card">
+              <div class="approvals-header">
+                <span class="card-title">Approvals</span>
+                <p class="card-subtitle-small">Decisions that need an owner</p>
+              </div>
+
+              <!-- Inner Interactive Action Item -->
+              <div class="approval-item" id="approvalActionItem" role="button" tabindex="0" title="Click to view approval details">
+                <div class="approval-icon-box">
+                  <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <rect x="3" y="3" width="18" height="18" rx="4"></rect>
+                    <polyline points="9 11 12 14 22 4"></polyline>
+                  </svg>
+                </div>
+                <div class="approval-text">
+                  <h4 class="approval-title">Owner review</h4>
+                  <p class="approval-desc">Refunds and renewal campaigns</p>
+                </div>
+                <button class="approval-arrow-btn" aria-label="Review Campaign Decisions">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <line x1="7" y1="17" x2="17" y2="7"></line>
+                    <polyline points="7 7 17 7 17 17"></polyline>
+                  </svg>
+                </button>
+              </div>
+            </article>
+          </div>
+
+          <!-- ROW 2, RIGHT: Recent Activity Data Table (8 cols) -->
+          <article class="bento-card col-span-8 table-card">
+            <div class="table-card-header">
+              <h3 class="card-title">Recent activity</h3>
+
+              <!-- Table Filters (Search + Status Dropdown) -->
+              <div class="table-controls">
+                <div class="table-search-pill">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <circle cx="11" cy="11" r="8"></circle>
+                    <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                  </svg>
+                  <input type="text" id="activitySearchInput" placeholder="Search activity" autocomplete="off" spellcheck="false">
+                </div>
+
+                <!-- Status Filter Dropdown -->
+                <div class="status-dropdown-wrapper">
+                  <button class="status-dropdown-btn" id="statusFilterBtn" aria-haspopup="true" aria-expanded="false">
+                    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                      <polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"></polygon>
+                    </svg>
+                    <span id="selectedStatusText">All statuses</span>
+                    <svg class="chevron-icon" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                      <polyline points="6 9 12 15 18 9"></polyline>
+                    </svg>
+                  </button>
+
+                  <div class="status-dropdown-menu" id="statusDropdownMenu" role="menu">
+                    <button class="dropdown-option active" data-status="all" role="menuitem">All statuses</button>
+                    <button class="dropdown-option" data-status="complete" role="menuitem">Complete</button>
+                    <button class="dropdown-option" data-status="needs-review" role="menuitem">Needs review</button>
+                    <button class="dropdown-option" data-status="scheduled" role="menuitem">Scheduled</button>
+                    <button class="dropdown-option" data-status="exceptions" role="menuitem">Exceptions</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Table Layout -->
+            <div class="table-container">
+              <table class="activity-table">
+                <thead>
+                  <tr>
+                    <th scope="col" class="th-activity">Activity</th>
+                    <th scope="col" class="th-source">Source</th>
+                    <th scope="col" class="th-status">Status</th>
+                    <th scope="col" class="th-time">Time</th>
+                  </tr>
+                </thead>
+                <tbody id="activityTableBody">
+                  <tr class="activity-row" data-status="complete">
+                    <td class="col-activity">Order records validated</td>
+                    <td class="col-source">Shopify</td>
+                    <td class="col-status">
+                      <span class="status-badge badge-complete">
+                        <span class="status-dot"></span> Complete
+                      </span>
+                    </td>
+                    <td class="col-time tabular-nums">10:38</td>
+                  </tr>
+                  <tr class="activity-row" data-status="needs-review">
+                    <td class="col-activity">Refund sent to review</td>
+                    <td class="col-source">Stripe</td>
+                    <td class="col-status">
+                      <span class="status-badge badge-review">
+                        <span class="status-dot"></span> Needs review
+                      </span>
+                    </td>
+                    <td class="col-time tabular-nums">10:24</td>
+                  </tr>
+                  <tr class="activity-row" data-status="scheduled">
+                    <td class="col-activity">Renewal sequence scheduled</td>
+                    <td class="col-source">HubSpot</td>
+                    <td class="col-status">
+                      <span class="status-badge badge-scheduled">
+                        <span class="status-dot"></span> Scheduled
+                      </span>
+                    </td>
+                    <td class="col-time tabular-nums">10:07</td>
+                  </tr>
+                  <tr class="activity-row" data-status="complete">
+                    <td class="col-activity">Support digest delivered</td>
+                    <td class="col-source">Reports</td>
+                    <td class="col-status">
+                      <span class="status-badge badge-complete">
+                        <span class="status-dot"></span> Complete
+                      </span>
+                    </td>
+                    <td class="col-time tabular-nums">09:51</td>
+                  </tr>
+                  <tr class="activity-row" data-status="exceptions">
+                    <td class="col-activity">Account match paused</td>
+                    <td class="col-source">Salesforce</td>
+                    <td class="col-status">
+                      <span class="status-badge badge-exceptions">
+                        <span class="status-dot"></span> Exceptions
+                      </span>
+                    </td>
+                    <td class="col-time tabular-nums">09:06</td>
+                  </tr>
+                </tbody>
+              </table>
+              <div class="empty-state-message" id="emptyStateMsg" style="display: none;">
+                No activity matches your filter.
+              </div>
+            </div>
+          </article>
+        </div>
+      </main>
+    </div>
+
+    <!-- Floating Bottom Navigation Dock -->
+    <nav class="bottom-floating-dock" aria-label="Main Dock Navigation">
+      <button class="dock-btn active" data-nav="command-center">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="3" y="3" width="7" height="7" rx="1.5"></rect>
+          <rect x="14" y="3" width="7" height="7" rx="1.5"></rect>
+          <rect x="14" y="14" width="7" height="7" rx="1.5"></rect>
+          <rect x="3" y="14" width="7" height="7" rx="1.5"></rect>
+        </svg>
+        <span>Command Center</span>
+      </button>
+
+      <button class="dock-btn" data-nav="trends">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+          <polyline points="23 6 13.5 15.5 8.5 10.5 1 18"></polyline>
+          <polyline points="17 6 23 6 23 12"></polyline>
+        </svg>
+        <span>Trends</span>
+      </button>
+
+      <button class="dock-btn" data-nav="metrics">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="18" y1="20" x2="18" y2="10"></line>
+          <line x1="12" y1="20" x2="12" y2="4"></line>
+          <line x1="6" y1="20" x2="6" y2="14"></line>
+        </svg>
+        <span>Metrics</span>
+      </button>
+
+      <button class="dock-btn" data-nav="operations">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="2" y="7" width="20" height="14" rx="2" ry="2"></rect>
+          <path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"></path>
+        </svg>
+        <span>Premium Operations</span>
+      </button>
+    </nav>
+
+    <!-- Page Footer Micro-labels -->
+    <footer class="page-footer">
+      <span class="footer-workspace-id">sample-workspace</span>
+      <a href="https://unsplash.com" target="_blank" rel="noopener noreferrer" class="footer-credit">
+        Photo by GoodLifeConstruction
+        <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <line x1="7" y1="17" x2="17" y2="7"></line>
+          <polyline points="7 7 17 7 17 17"></polyline>
+        </svg>
+      </a>
+    </footer>
+  </div>
+
+  <!-- Interactive Modal: AI Attention Spotlight -->
+  <div class="glass-modal-overlay" id="aiModal" aria-hidden="true">
+    <div class="glass-modal-card">
+      <div class="modal-header">
+        <div class="modal-title-with-orb">
+          <div class="iridescent-orb sm"></div>
+          <h3>Atlas Intelligence Spotlight</h3>
+        </div>
+        <button class="modal-close-btn" id="closeAiModalBtn" aria-label="Close modal">&times;</button>
+      </div>
+      <div class="modal-body">
+        <p class="modal-intro">Based on your live signals across 3 interconnected tools, <strong>2 items</strong> need executive attention:</p>
+        <div class="attention-list">
+          <div class="attention-card warning">
+            <div class="attention-badge">Needs Review</div>
+            <h4>Stripe: $1,420 Refund Authorization</h4>
+            <p>High-tier subscriber request exceeded automated threshold ($500). Pending owner sign-off.</p>
+            <div class="attention-actions">
+              <button class="btn-pill-primary sm" onclick="alert('Refund of $1,420 approved!')">Approve Now</button>
+              <button class="btn-pill-glass sm" onclick="alert('Forwarded to Support Lead.')">Delegate</button>
+            </div>
+          </div>
+          <div class="attention-card alert">
+            <div class="attention-badge">Exceptions</div>
+            <h4>Salesforce: Account match paused</h4>
+            <p>5 enterprise records failed fuzzy reconciliation due to domain mismatch on EMEA accounts.</p>
+            <div class="attention-actions">
+              <button class="btn-pill-glass sm" onclick="alert('Resumed synchronization with manual override.')">Resolve Mapping</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Interactive Modal: Owner Review Approval -->
+  <div class="glass-modal-overlay" id="approvalModal" aria-hidden="true">
+    <div class="glass-modal-card">
+      <div class="modal-header">
+        <div class="modal-title-with-orb">
+          <div class="approval-icon-box sm">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <rect x="3" y="3" width="18" height="18" rx="4"></rect>
+              <polyline points="9 11 12 14 22 4"></polyline>
+            </svg>
+          </div>
+          <h3>Owner Approvals Queue</h3>
+        </div>
+        <button class="modal-close-btn" id="closeApprovalModalBtn" aria-label="Close modal">&times;</button>
+      </div>
+      <div class="modal-body">
+        <p class="modal-intro">Pending decisions requiring workspace administrative authority:</p>
+        <div class="attention-list">
+          <div class="attention-card">
+            <h4>Q4 Renewal Sequence Activation</h4>
+            <p>HubSpot targeted sequence for 34 enterprise contracts up for renewal in December.</p>
+            <div class="attention-actions">
+              <button class="btn-pill-primary sm" onclick="alert('Renewal Sequence Activated!')">Approve & Dispatch</button>
+              <button class="btn-pill-glass sm" onclick="alert('Scheduled for next Monday.')">Reschedule</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+/**
+ * ATLAS Command Center - Interactive Controller
+ * Handles time-range transitions, live filtering, dynamic tooltips,
+ * navigation syncing, and modal spotlights.
+ */
+
+document.addEventListener('DOMContentLoaded', () => {
+  // --- Data by Time Range ---
+  const timeRangeData = {
+    '7': {
+      revenue: '$14,800',
+      revenueRaw: 14800,
+      trend: '+6.1%',
+      subscriptions: '$10,210',
+      services: '$3,150',
+      addons: '$1,440',
+      automations: '342',
+      automationsTrend: '+12.4%',
+      subscribers: '512',
+      subscribersNote: '+42 this week',
+      churn: '3.8%',
+      churnTrend: '-0.2%',
+      tickets: '4',
+      ticketsSub: '3 resolved today',
+      capacityUsed: '342 used',
+      capacityTotal: '1,000 monthly runs',
+      capacityPercent: '34.2%',
+      bars: [
+        { day: 'Tue', complete: 38, review: 6, compH: 35, revH: 10 },
+        { day: 'Wed', complete: 44, review: 8, compH: 42, revH: 12 },
+        { day: 'Thu', complete: 52, review: 9, compH: 48, revH: 14 },
+        { day: 'Fri', complete: 68, review: 12, compH: 62, revH: 18 },
+        { day: 'Sat', complete: 30, review: 4, compH: 28, revH: 8 },
+        { day: 'Sun', complete: 48, review: 7, compH: 45, revH: 12 },
+        { day: 'Mon', complete: 72, review: 14, compH: 68, revH: 20 }
+      ]
+    },
+    '30': {
+      revenue: '$47,200',
+      revenueRaw: 47200,
+      trend: '+8.3%',
+      subscriptions: '$32,379',
+      services: '$9,818',
+      addons: '$5,003',
+      automations: '1,284',
+      automationsTrend: '+9.5%',
+      subscribers: '1,847',
+      subscribersNote: '+124 this month',
+      churn: '4.2%',
+      churnTrend: '-0.5%',
+      tickets: '12',
+      ticketsSub: '9 resolved today',
+      capacityUsed: '1,284 used',
+      capacityTotal: '3,200 monthly runs',
+      capacityPercent: '40.1%',
+      bars: [
+        { day: 'Tue', complete: 142, review: 22, compH: 48, revH: 14 },
+        { day: 'Wed', complete: 158, review: 26, compH: 52, revH: 15 },
+        { day: 'Thu', complete: 176, review: 30, compH: 58, revH: 16 },
+        { day: 'Fri', complete: 210, review: 35, compH: 70, revH: 18 },
+        { day: 'Sat', complete: 120, review: 18, compH: 38, revH: 12 },
+        { day: 'Sun', complete: 185, review: 28, compH: 62, revH: 15 },
+        { day: 'Mon', complete: 245, review: 42, compH: 78, revH: 20 }
+      ]
+    },
+    '90': {
+      revenue: '$146,850',
+      revenueRaw: 146850,
+      trend: '+14.2%',
+      subscriptions: '$98,400',
+      services: '$31,250',
+      addons: '$17,200',
+      automations: '4,120',
+      automationsTrend: '+16.8%',
+      subscribers: '5,340',
+      subscribersNote: '+480 this quarter',
+      churn: '3.9%',
+      churnTrend: '-0.8%',
+      tickets: '28',
+      ticketsSub: '24 resolved this week',
+      capacityUsed: '4,120 used',
+      capacityTotal: '9,600 monthly runs',
+      capacityPercent: '42.9%',
+      bars: [
+        { day: 'Tue', complete: 480, review: 70, compH: 54, revH: 15 },
+        { day: 'Wed', complete: 520, review: 85, compH: 58, revH: 16 },
+        { day: 'Thu', complete: 590, review: 95, compH: 66, revH: 18 },
+        { day: 'Fri', complete: 680, review: 110, compH: 76, revH: 20 },
+        { day: 'Sat', complete: 390, review: 55, compH: 44, revH: 12 },
+        { day: 'Sun', complete: 610, review: 90, compH: 68, revH: 17 },
+        { day: 'Mon', complete: 790, review: 130, compH: 82, revH: 22 }
+      ]
+    }
+  };
+
+  // --- Element Selectors ---
+  const rangePills = document.querySelectorAll('.range-pill');
+  const kpiRevenue = document.getElementById('kpiRevenue');
+  const kpiRevenueTrend = document.getElementById('kpiRevenueTrend');
+  const kpiSubscriptions = document.getElementById('kpiSubscriptions');
+  const kpiServices = document.getElementById('kpiServices');
+  const kpiAddons = document.getElementById('kpiAddons');
+  const kpiAutomations = document.getElementById('kpiAutomations');
+  const kpiSubscribers = document.getElementById('kpiSubscribers');
+  const kpiChurn = document.getElementById('kpiChurn');
+  const kpiTickets = document.getElementById('kpiTickets');
+  const kpiTicketsSub = document.getElementById('kpiTicketsSub');
+  const capacityUsed = document.getElementById('capacityUsed');
+  const capacityTotal = document.getElementById('capacityTotal');
+  const capacityFill = document.getElementById('capacityFill');
+
+  // Chart Elements
+  const chartContainer = document.getElementById('barChartContainer');
+  const chartTooltip = document.getElementById('chartTooltip');
+  const tooltipDay = document.getElementById('tooltipDay');
+  const tooltipComplete = document.getElementById('tooltipComplete');
+  const tooltipReview = document.getElementById('tooltipReview');
+
+  // Table & Filter Elements
+  const searchInput = document.getElementById('activitySearchInput');
+  const statusFilterBtn = document.getElementById('statusFilterBtn');
+  const statusDropdownMenu = document.getElementById('statusDropdownMenu');
+  const selectedStatusText = document.getElementById('selectedStatusText');
+  const tableRows = document.querySelectorAll('.activity-row');
+  const emptyStateMsg = document.getElementById('emptyStateMsg');
+
+  // Modals
+  const aiSearchTrigger = document.getElementById('aiSearchTrigger');
+  const aiModal = document.getElementById('aiModal');
+  const closeAiModalBtn = document.getElementById('closeAiModalBtn');
+
+  const approvalActionItem = document.getElementById('approvalActionItem');
+  const approvalModal = document.getElementById('approvalModal');
+  const closeApprovalModalBtn = document.getElementById('closeApprovalModalBtn');
+
+  // Navigation Items
+  const railButtons = document.querySelectorAll('.rail-btn');
+  const dockButtons = document.querySelectorAll('.dock-btn');
+
+  // --- Number Counter Helper ---
+  function animateValue(element, start, end, duration, prefix = '', suffix = '') {
+    let startTimestamp = null;
+    const step = (timestamp) => {
+      if (!startTimestamp) startTimestamp = timestamp;
+      const progress = Math.min((timestamp - startTimestamp) / duration, 1);
+      const easeProgress = 1 - Math.pow(1 - progress, 3); // cubic ease out
+      const current = Math.floor(easeProgress * (end - start) + start);
+      element.textContent = `${prefix}${current.toLocaleString()}${suffix}`;
+      if (progress < 1) {
+        window.requestAnimationFrame(step);
+      }
+    };
+    window.requestAnimationFrame(step);
+  }
+
+  // --- Time Range Switcher Logic ---
+  rangePills.forEach(pill => {
+    pill.addEventListener('click', () => {
+      const selectedRange = pill.getAttribute('data-range');
+      if (!selectedRange || pill.classList.contains('active')) return;
+
+      // Update pill classes
+      rangePills.forEach(p => {
+        p.classList.remove('active');
+        p.setAttribute('aria-selected', 'false');
+      });
+      pill.classList.add('active');
+      pill.setAttribute('aria-selected', 'true');
+
+      // Update data
+      const data = timeRangeData[selectedRange];
+      if (!data) return;
+
+      // Parse current revenue
+      const currentRev = parseInt(kpiRevenue.textContent.replace(/[^0-9]/g, ''), 10) || 0;
+      animateValue(kpiRevenue, currentRev, data.revenueRaw, 500);
+
+      kpiRevenueTrend.textContent = data.trend;
+      kpiSubscriptions.textContent = data.subscriptions;
+      kpiServices.textContent = data.services;
+      kpiAddons.textContent = data.addons;
+
+      kpiAutomations.textContent = data.automations;
+      kpiSubscribers.textContent = data.subscribers;
+      kpiChurn.textContent = data.churn;
+      kpiTickets.textContent = data.tickets;
+      kpiTicketsSub.textContent = data.ticketsSub;
+
+      capacityUsed.textContent = data.capacityUsed;
+      capacityTotal.textContent = data.capacityTotal;
+      capacityFill.style.width = data.capacityPercent;
+
+      // Update chart bars
+      const barCols = chartContainer.querySelectorAll('.chart-bar-col');
+      barCols.forEach((barCol, index) => {
+        const barData = data.bars[index];
+        if (!barData) return;
+        barCol.setAttribute('data-complete', barData.complete);
+        barCol.setAttribute('data-review', barData.review);
+        const segReview = barCol.querySelector('.bar-segment-review');
+        const segComplete = barCol.querySelector('.bar-segment-complete');
+        if (segReview) segReview.style.height = `${barData.revH}%`;
+        if (segComplete) segComplete.style.height = `${barData.compH}%`;
+      });
+    });
+  });
+
+  // --- Bar Chart Tooltip Interaction ---
+  const barCols = document.querySelectorAll('.chart-bar-col');
+  barCols.forEach(col => {
+    col.addEventListener('mouseenter', () => {
+      const day = col.getAttribute('data-day');
+      const complete = col.getAttribute('data-complete');
+      const review = col.getAttribute('data-review');
+
+      tooltipDay.textContent = day;
+      tooltipComplete.textContent = complete;
+      tooltipReview.textContent = review;
+
+      // Position tooltip above current bar
+      const colRect = col.getBoundingClientRect();
+      const parentRect = chartContainer.getBoundingClientRect();
+      const offsetLeft = colRect.left - parentRect.left + (colRect.width / 2);
+
+      chartTooltip.style.left = `${offsetLeft}px`;
+      chartTooltip.classList.add('visible');
+
+      barCols.forEach(b => b.classList.remove('active-bar'));
+      col.classList.add('active-bar');
+    });
+  });
+
+  chartContainer.addEventListener('mouseleave', () => {
+    chartTooltip.classList.remove('visible');
+  });
+
+  // --- Live Table Filtering & Search ---
+  let currentFilter = 'all';
+  let currentSearch = '';
+
+  function filterTable() {
+    let visibleCount = 0;
+    tableRows.forEach(row => {
+      const rowStatus = row.getAttribute('data-status');
+      const rowActivity = row.querySelector('.col-activity')?.textContent.toLowerCase() || '';
+      const rowSource = row.querySelector('.col-source')?.textContent.toLowerCase() || '';
+
+      const matchesStatus = (currentFilter === 'all') || (rowStatus === currentFilter);
+      const matchesSearch = rowActivity.includes(currentSearch) || rowSource.includes(currentSearch);
+
+      if (matchesStatus && matchesSearch) {
+        row.style.display = '';
+        visibleCount++;
+      } else {
+        row.style.display = 'none';
+      }
+    });
+
+    if (visibleCount === 0) {
+      emptyStateMsg.style.display = 'block';
+    } else {
+      emptyStateMsg.style.display = 'none';
+    }
+  }
+
+  // Search Input Listener
+  if (searchInput) {
+    searchInput.addEventListener('input', (e) => {
+      currentSearch = e.target.value.toLowerCase().trim();
+      filterTable();
+    });
+  }
+
+  // Status Dropdown Toggle
+  if (statusFilterBtn && statusDropdownMenu) {
+    statusFilterBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      const isExpanded = statusDropdownMenu.classList.contains('show');
+      statusDropdownMenu.classList.toggle('show');
+      statusFilterBtn.setAttribute('aria-expanded', !isExpanded);
+    });
+
+    // Option Click
+    const dropdownOptions = statusDropdownMenu.querySelectorAll('.dropdown-option');
+    dropdownOptions.forEach(option => {
+      option.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const status = option.getAttribute('data-status');
+        currentFilter = status;
+
+        dropdownOptions.forEach(opt => opt.classList.remove('active'));
+        option.classList.add('active');
+
+        selectedStatusText.textContent = option.textContent;
+        statusDropdownMenu.classList.remove('show');
+        statusFilterBtn.setAttribute('aria-expanded', 'false');
+
+        filterTable();
+      });
+    });
+
+    // Close on outside click
+    document.addEventListener('click', () => {
+      if (statusDropdownMenu.classList.contains('show')) {
+        statusDropdownMenu.classList.remove('show');
+        statusFilterBtn.setAttribute('aria-expanded', 'false');
+      }
+    });
+  }
+
+  // --- Modal Dialogs (AI Spotlight & Approvals) ---
+  function openModal(modal) {
+    if (!modal) return;
+    modal.classList.add('open');
+    modal.setAttribute('aria-hidden', 'false');
+    document.body.style.overflow = 'hidden';
+  }
+
+  function closeModal(modal) {
+    if (!modal) return;
+    modal.classList.remove('open');
+    modal.setAttribute('aria-hidden', 'true');
+    document.body.style.overflow = '';
+  }
+
+  // AI Spotlight Modal
+  if (aiSearchTrigger && aiModal) {
+    aiSearchTrigger.addEventListener('click', () => openModal(aiModal));
+    aiSearchTrigger.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' || e.key === ' ') {
+        e.preventDefault();
+        openModal(aiModal);
+      }
+    });
+    if (closeAiModalBtn) {
+      closeAiModalBtn.addEventListener('click', () => closeModal(aiModal));
+    }
+    aiModal.addEventListener('click', (e) => {
+      if (e.target === aiModal) closeModal(aiModal);
+    });
+  }
+
+  // Approvals Modal
+  if (approvalActionItem && approvalModal) {
+    approvalActionItem.addEventListener('click', () => openModal(approvalModal));
+    approvalActionItem.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' || e.key === ' ') {
+        e.preventDefault();
+        openModal(approvalModal);
+      }
+    });
+    if (closeApprovalModalBtn) {
+      closeApprovalModalBtn.addEventListener('click', () => closeModal(approvalModal));
+    }
+    approvalModal.addEventListener('click', (e) => {
+      if (e.target === approvalModal) closeModal(approvalModal);
+    });
+  }
+
+  // Escape key closes modals
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') {
+      closeModal(aiModal);
+      closeModal(approvalModal);
+    }
+  });
+
+  // --- Navigation Tab Synchronizer ---
+  function syncNavigation(navTarget) {
+    railButtons.forEach(btn => {
+      if (btn.getAttribute('data-nav') === navTarget) {
+        btn.classList.add('active');
+      } else {
+        btn.classList.remove('active');
+      }
+    });
+
+    dockButtons.forEach(btn => {
+      if (btn.getAttribute('data-nav') === navTarget) {
+        btn.classList.add('active');
+      } else {
+        btn.classList.remove('active');
+      }
+    });
+  }
+
+  railButtons.forEach(btn => {
+    btn.addEventListener('click', () => {
+      const navTarget = btn.getAttribute('data-nav');
+      syncNavigation(navTarget);
+    });
+  });
+
+  dockButtons.forEach(btn => {
+    btn.addEventListener('click', () => {
+      const navTarget = btn.getAttribute('data-nav');
+      syncNavigation(navTarget);
+    });
+  });
+
+  // Button CTAs Interactive Feedback
+  const btnViewTrends = document.getElementById('btnViewTrends');
+  const btnViewMetrics = document.getElementById('btnViewMetrics');
+  if (btnViewTrends) {
+    btnViewTrends.addEventListener('click', () => syncNavigation('trends'));
+  }
+  if (btnViewMetrics) {
+    btnViewMetrics.addEventListener('click', () => syncNavigation('metrics'));
+  }
+
+  // Ambient Lighting Settings (Theme Toggle)
+  const themeToggleBtn = document.getElementById('themeToggleBtn');
+  let isTwilight = false;
+  if (themeToggleBtn) {
+    themeToggleBtn.addEventListener('click', () => {
+      isTwilight = !isTwilight;
+      if (isTwilight) {
+        document.documentElement.style.setProperty('--canvas-bg', '#1c1715');
+        document.documentElement.style.setProperty('--glass-shell-bg', 'rgba(38, 30, 26, 0.88)');
+      } else {
+        document.documentElement.style.setProperty('--canvas-bg', '#221c19');
+        document.documentElement.style.setProperty('--glass-shell-bg', 'rgba(44, 37, 33, 0.82)');
+      }
+    });
+  }
+
+  // Notification Button
+  const notificationBtn = document.getElementById('notificationBtn');
+  if (notificationBtn) {
+    notificationBtn.addEventListener('click', () => openModal(aiModal));
+  }
+});
+
+</script>
+</body>
+</html>
